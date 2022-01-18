@@ -1,14 +1,17 @@
-# model.py
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from layers import SPHConvNet, KdTreePooling
+from layers import SPHConvNet
+
 
 class PointNetWithSPH(nn.Module):
     def __init__(self, out_channels, kernel_radius, strides, l_max, nr, patch_size,
                  kd_pool_ratio, nlatent, num_inp=3):
-        """Encoder"""
+        """
+        Encoder, track_running_stats=False because the signal of 1s and input point cloud are from
+        different proba distribution
+        """
 
         super(PointNetWithSPH, self).__init__()
         self.conv1 = SPHConvNet(num_inp, out_channels[0], l_max, nr, patch_size, kernel_radius[0], 
@@ -43,7 +46,7 @@ class PointNetWithSPH(nn.Module):
 
     def forward(self, inp_pc):
         inp_pc = inp_pc.view(inp_pc.shape[0], -1, 3)
-        second_signal = torch.ones((inp_pc.shape[0], inp_pc.shape[1], 1)).to(inp_pc.device)
+        second_signal = torch.ones((inp_pc.shape[0], inp_pc.shape[1], 1)).to(inp_pc.device).double()
         x = self.conv1(inp_pc, second_signal, return_filters=False)
         x = self.kdTreePool_1(F.relu(self.bn1(x.transpose(1,2)))).transpose(1,2)
         # x = self.kdTreePooling(F.relu(x.transpose(1,2))).transpose(1,2)

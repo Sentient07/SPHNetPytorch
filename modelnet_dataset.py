@@ -67,7 +67,7 @@ class ModelNet40Generator(Dataset):
         else:
             X = self.random_rotation(X)
 
-        X = torch.from_numpy(self.kdtree_index_pc(X)).float()
+        X = torch.from_numpy(self.kdtree_index_pc(X)).double()
         return X, y_categorical
 
 
