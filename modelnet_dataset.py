@@ -72,10 +72,10 @@ class ModelNet40Generator(Dataset):
 
 
     def random_scaling(self, X):
-
-        a = np.random.uniform(low=2. / 3., high=3. / 2., size=[X.shape[0], 3])
-        b = np.random.uniform(low=-0.2, high=0.2, size=[X.shape[0], 3])
-        return np.add(np.multiply(a, X), b)
+        X = X[np.newaxis, :, :]
+        a = np.random.uniform(low=2. / 3., high=3. / 2., size=[X.shape[0], 1, 3])
+        b = np.random.uniform(low=-0.2, high=0.2, size=[X.shape[0], 1, 3])
+        return np.squeeze(np.add(np.multiply(a, X), b))
 
     def kdtree_index_pc(self, X):
         T = cKDTree(X)

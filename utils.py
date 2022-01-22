@@ -1,6 +1,7 @@
 # utils.py
 import torch
 import torch.nn as nn
+import trimesh
 import numpy as np
 
 def normalized_sh(X_, l_max=3):
@@ -19,7 +20,7 @@ def normalized_sh(X_, l_max=3):
 
     Y0 = []
     
-    Y00 = torch.ones_like(x).double()* (np.sqrt(1. / np.pi) / 2)
+    Y00 = torch.ones_like(x).float()* (np.sqrt(1. / np.pi) / 2)
     # Y00.requires_grad_(False)
     Y0.append(Y00)
 
@@ -90,3 +91,9 @@ def normalized_sh(X_, l_max=3):
         Y += Y3
 
     return torch.stack(Y, axis=-1)
+
+
+def save_xyz(pts, file_name):
+    s = trimesh.util.array_to_string(pts)
+    with open(file_name, 'w') as f:
+        f.write("%s\n" % s)
